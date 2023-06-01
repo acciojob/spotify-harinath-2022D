@@ -49,20 +49,40 @@ public class SpotifyRepository {
         return artist;
     }
 
-    public Album createAlbum(String title, String artistName) {
-        Album album = new Album(title);
-        boolean flag = false;
+    public Optional<Artist> check_present_or_not(String name){
         for(int i=0; i<artists.size(); i++){
-            String name = artists.get(i).getName();
-            if(name == artistName){
-                flag = true;
-                break;
+            String name1 = artists.get(i).getName();
+            if(name1.equals(name)){
+                return Optional.of(artists.get(i));
             }
         }
-        if(flag == false){
-            Artist artist = createArtist(artistName);
+        return Optional.empty();
+    }
+    public Album createAlbum(String title, String artistName) {
+//        Album album = new Album(title);
+//        boolean flag = false;
+//        for(int i=0; i<artists.size(); i++){
+//            String name = artists.get(i).getName();
+//            if(name == artistName){
+//                flag = true;
+//                break;
+//            }
+//        }
+//        if(flag == false){
+//            Artist artist = createArtist(artistName);
+//        }
+//        albums.add(album);
+//        return album;
+        Album album = new Album(title);
+        Artist artist = null;
+        Optional<Artist> optionalArtist = check_present_or_not(artistName);
+        if(optionalArtist.isEmpty()){
+             artist = createArtist(artistName);
         }
         albums.add(album);
+        List<Album> albumList = artistAlbumMap.getOrDefault(artist,new ArrayList<>());
+        albumList.add(album);
+        artistAlbumMap.put(artist,albumList);
         return album;
     }
 
