@@ -296,7 +296,7 @@ public class SpotifyRepository {
         User user = optionalUser.get();
         Song song = optionalSong.get();
         if(songLikeMap.containsKey(song)){
-            List<User> userList = songLikeMap.get(song);
+            List<User> userList = songLikeMap.getOrDefault(song,new ArrayList<>());
             if(userList.contains(user)) return song;
             else{
                 userList.add(user);
@@ -331,7 +331,7 @@ public class SpotifyRepository {
 
     public String mostPopularArtist() {
         int maxlikes = 0;
-        String artistName = "";
+        String artistName = null;
         for(Artist artist : artists){
             int likes = artist.getLikes();
             if(likes >= maxlikes){
@@ -344,7 +344,7 @@ public class SpotifyRepository {
 
     public String mostPopularSong() {
         int maxlikes = 0;
-        String songName = "";
+        String songName = null;
         for(Song song : songs){
             int likes = song.getLikes();
             if(likes >= maxlikes){
