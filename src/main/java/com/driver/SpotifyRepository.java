@@ -328,8 +328,8 @@ public class SpotifyRepository {
 
 
         List<User> users = songLikeMap.getOrDefault(song,new ArrayList<>());
-        for(User user : users){
-            if(user.getMobile().equals(user.getMobile()) && user.getName().equals(user.getName()))return song;
+        for(User us : users){
+            if(us.getMobile().equals(user.getMobile()) && us.getName().equals(user.getName()))return song;
         }
         users.add(user);
         songLikeMap.put(song,users);
