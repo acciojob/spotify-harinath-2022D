@@ -236,12 +236,17 @@ public class SpotifyRepository {
         // check creater
         if(creatorPlaylistMap.containsKey(user)) return playlist;
 
-        List<User> listnerlist = playlistListenerMap.get(playlist);
+        List<User> listnerlist = playlistListenerMap.getOrDefault(playlist,new ArrayList<>());
         if(listnerlist.contains(user)) return playlist;
         else{
             listnerlist.add(user);
             playlistListenerMap.put(playlist,listnerlist);
         }
+
+        //user -> playlist
+        List<Playlist> user_playlist = userPlaylistMap.getOrDefault(user,new ArrayList<>());
+        user_playlist.add(playlist);
+        userPlaylistMap.put(user,user_playlist);
 
         return playlist;
     }
