@@ -283,50 +283,109 @@ public class SpotifyRepository {
     }
     public Song likeSong(String mobile, String songTitle) throws Exception {
         // chesk user
-        Optional<User> optionalUser = find_user(mobile);
-        if(optionalUser.isEmpty()){
+//        Optional<User> optionalUser = find_user(mobile);
+//        if(optionalUser.isEmpty()){
+//            throw new Exception("User does not exist");
+//        }
+//        // check song
+//        Optional<Song> optionalSong = find_song(songTitle);
+//        if(optionalSong.isEmpty()){
+//            throw new Exception("Song does not exist");
+//        }
+//        // check song like map
+//        User user = optionalUser.get();
+//        Song song = optionalSong.get();
+//        if(songLikeMap.containsKey(song)){
+//            List<User> userList = songLikeMap.getOrDefault(song,new ArrayList<>());
+//            if(userList.contains(user)) return song;
+//            else{
+//                userList.add(user);
+//                songLikeMap.put(song,userList);
+//                //update song likes
+//                song.setLikes(song.getLikes()+1);
+//                //update artist likes
+//                // song -> album -> artist
+//                //find album of song
+//                Album album = find_album_of_song(song);
+//                //fing artist with album name
+//                Artist artist = find_artist_of_album(album);
+//                artist.setLikes(artist.getLikes()+1);
+//            }
+//        }else{
+//            List<User> userList = new ArrayList<>();
+//            userList.add(user);
+//            songLikeMap.put(song,userList);
+//            //update song likes
+//            song.setLikes(song.getLikes()+1);
+//            //update artist likes
+//            // song -> album -> artist
+//            //find album of song
+//            Album album = find_album_of_song(song);
+//            //fing artist with album name
+//            Artist artist = find_artist_of_album(album);
+//            artist.setLikes(artist.getLikes()+1);
+//        }
+//
+//
+//        return song;
+
+        User curUser = new User();
+        boolean f = false;
+        for (User user : users) {
+            if (user.getMobile().equals(mobile)) {
+                curUser = user;
+                f = true;
+                break;
+            }
+        }
+        if (f == false) {
             throw new Exception("User does not exist");
         }
-        // check song
-        Optional<Song> optionalSong = find_song(songTitle);
-        if(optionalSong.isEmpty()){
+
+        Song song = new Song();
+        boolean flag = false;
+        for (Song cursong : songs) {
+            if (cursong.getTitle().equals(songTitle)) {
+                song = cursong;
+                flag = true;
+                break;
+            }
+        }
+        if (flag == false) {
             throw new Exception("Song does not exist");
         }
-        // check song like map
-        User user = optionalUser.get();
-        Song song = optionalSong.get();
-        if(songLikeMap.containsKey(song)){
-            List<User> userList = songLikeMap.getOrDefault(song,new ArrayList<>());
-            if(userList.contains(user)) return song;
-            else{
-                userList.add(user);
-                songLikeMap.put(song,userList);
-                //update song likes
-                song.setLikes(song.getLikes()+1);
-                //update artist likes
-                // song -> album -> artist
-                //find album of song
-                Album album = find_album_of_song(song);
-                //fing artist with album name
-                Artist artist = find_artist_of_album(album);
-                artist.setLikes(artist.getLikes()+1);
-            }
-        }else{
-            List<User> userList = new ArrayList<>();
-            userList.add(user);
-            songLikeMap.put(song,userList);
-            //update song likes
-            song.setLikes(song.getLikes()+1);
-            //update artist likes
-            // song -> album -> artist
-            //find album of song
-            Album album = find_album_of_song(song);
-            //fing artist with album name
-            Artist artist = find_artist_of_album(album);
-            artist.setLikes(artist.getLikes()+1);
+
+        List<User> users = new ArrayList<>();
+        if (songLikeMap.containsKey(song)) {
+            users = songLikeMap.get(song);
         }
+        if (!users.contains(curUser)) {
+            users.add(curUser);
+            songLikeMap.put(song, users);
+            song.setLikes(song.getLikes() + 1);
 
 
+            Album album = new Album();
+            for (Album curAlbum : albumSongMap.keySet()) {
+                List<Song> temp = albumSongMap.get(curAlbum);
+                if (temp.contains(song)) {
+                    album = curAlbum;
+                    break;
+                }
+            }
+
+
+            Artist artist = new Artist();
+            for (Artist curArtist : artistAlbumMap.keySet()) {
+                List<Album> temp = artistAlbumMap.get(curArtist);
+                if (temp.contains(album)) {
+                    artist = curArtist;
+                    break;
+                }
+            }
+
+            artist.setLikes(artist.getLikes() + 1);
+        }
         return song;
     }
 
